@@ -17,5 +17,6 @@ public class PopsicleModel
         new Popsicle { Id = 3, Name = "Mango Tango", Flavor = "Mango", Description = "A tropical mango-flavored popsicle.", Quantity = 8 },
         new Popsicle { Id = 4, Name = "Blueberry Bliss", Flavor = "Blueberry", Description = "A delightful blueberry-flavored popsicle.", Quantity = 12 }
     };
+
 };
 

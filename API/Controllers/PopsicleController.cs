@@ -7,6 +7,12 @@ namespace API.Controllers;
 [Route("[controller]")]
 public class PopsicleController : ControllerBase
 {
+    private readonly IPopsicleRepository _repo;
+    public PopsicleController(IPopsicleRepository repo)
+    {
+        _repo = repo;
+    }
+
     [HttpPost("CreatePopsicle")]
     public IActionResult CreatePopsicle(Popsicle popsicle)
     {
@@ -14,8 +20,7 @@ public class PopsicleController : ControllerBase
         if (ModelState.IsValid)
         {
             //check if popsicle with same name and flavor exists in the list
-            var popsicleModel = new PopsicleModel();
-            var existingPopsicle = popsicleModel.TestPopsicles
+            var existingPopsicle = _repo.Popsicles
                 .FirstOrDefault(p => p.Name.Equals(popsicle.Name, StringComparison.OrdinalIgnoreCase) ||
                                      p.Flavor.Equals(popsicle.Flavor, StringComparison.OrdinalIgnoreCase));
             //if it exists, return 409 Conflict with existing popsicle
@@ -32,8 +37,8 @@ public class PopsicleController : ControllerBase
                 try
                 {
                     //add the new popsicle to the list
-                    popsicle.Id = popsicleModel.TestPopsicles.Count + 1; //simulate ID generation
-                    popsicleModel.TestPopsicles.Add(popsicle);
+                    popsicle.Id = _repo.Popsicles.Count + 1; //simulate ID generation
+                    _repo.Popsicles.Add(popsicle);
 
                     //return 201 Created with the created popsicle
                     return Ok(popsicle);
@@ -59,8 +64,7 @@ public class PopsicleController : ControllerBase
         if (ModelState.IsValid)
         {
             //check db if this popsicle exists
-            var popsicleModel = new PopsicleModel();
-            var existingPopsicle = popsicleModel.TestPopsicles.FirstOrDefault(p => p.Id == id);
+            var existingPopsicle = _repo.Popsicles.FirstOrDefault(p => p.Id == id);
             //if it exists, replace it
             if (existingPopsicle != null)
             {
@@ -71,8 +75,8 @@ public class PopsicleController : ControllerBase
                     //ensure the ID remains the same
                     newPopsicle.Id = id;
                     //replace the existing popsicle with the new one
-                    popsicleModel.TestPopsicles.Remove(existingPopsicle);
-                    popsicleModel.TestPopsicles.Add(newPopsicle);
+                    _repo.Popsicles.Remove(existingPopsicle);
+                    _repo.Popsicles.Add(newPopsicle);
                     //return 200 OK with the updated popsicle
                     return Ok(newPopsicle);
                 }
@@ -99,8 +103,7 @@ public class PopsicleController : ControllerBase
         if (ModelState.IsValid)
         {
             //check db if this popsicle exists
-            var popsicleModel = new PopsicleModel();
-            var existingPopsicle = popsicleModel.TestPopsicles.FirstOrDefault(p => p.Id == id);
+            var existingPopsicle = _repo.Popsicles.FirstOrDefault(p => p.Id == id);
             //if it exists, update it
             if (existingPopsicle != null)
             {
@@ -152,15 +155,14 @@ public class PopsicleController : ControllerBase
     public IActionResult DeletePopsicle(int id)
     {
         //check db if this popsicle exists
-        var popsicleModel = new PopsicleModel();
-        var existingPopsicle = popsicleModel.TestPopsicles.FirstOrDefault(p => p.Id == id);
+        var existingPopsicle = _repo.Popsicles.FirstOrDefault(p => p.Id == id);
         //if it exists, delete it
         if (existingPopsicle != null)
         {
             try
             {
                 //remove the existing popsicle from the list
-                popsicleModel.TestPopsicles.Remove(existingPopsicle);           
+                _repo.Popsicles.Remove(existingPopsicle);           
         //return 200 OK with a success message
                 return Ok(new { Message = "Popsicle deleted successfully." });
             }
@@ -186,8 +188,7 @@ public class PopsicleController : ControllerBase
         }
 
         //search the list of popsicles
-        var popsicleModel = new PopsicleModel();
-        var results = popsicleModel.TestPopsicles
+        var results = _repo.Popsicles
             .Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                         p.Flavor.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                         p.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
@@ -206,8 +207,7 @@ public class PopsicleController : ControllerBase
     public IActionResult GetPopsicleById(int id)
     {
         //check db if this popsicle exists
-        var popsicleModel = new PopsicleModel();
-        var existingPopsicle = popsicleModel.TestPopsicles.FirstOrDefault(p => p.Id == id);
+        var existingPopsicle = _repo.Popsicles.FirstOrDefault(p => p.Id == id);
         //if it exists, return it
         if (existingPopsicle != null)
         {
@@ -223,7 +223,6 @@ public class PopsicleController : ControllerBase
     public IActionResult GetAllPopsicles()
     {
         //return the list of popsicles
-        var popsicleModel = new PopsicleModel();
-        return Ok(popsicleModel.TestPopsicles);
+        return Ok(_repo.Popsicles);
     }
 }
