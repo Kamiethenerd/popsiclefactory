@@ -8,7 +8,6 @@ public class PopsicleModel
         public string Name { get; set; } = string.Empty;
         public string Flavor { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public int? Quantity { get; set; }
     }
     public List<Popsicle> TestPopsicles = new List<Popsicle>

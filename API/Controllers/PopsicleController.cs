@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Mvc;
 using static API.PopsicleModel;
 
@@ -14,8 +13,6 @@ public class PopsicleController : ControllerBase
         //check popsicle is valid
         if (ModelState.IsValid)
         {
-            //check db if this popsicle exists
-            //for now, we will use a static list to simulate a database
             //check if popsicle with same name and flavor exists in the list
             var popsicleModel = new PopsicleModel();
             var existingPopsicle = popsicleModel.TestPopsicles
@@ -126,8 +123,10 @@ public class PopsicleController : ControllerBase
                         existingPopsicle.Description = popsicleUpdate.Description;
                     }
                     //if popsicle quantity is not null, update the existing popsicle quantity
-                    if( popsicleUpdate.Quantity != null)
-                    
+                    if (popsicleUpdate.Quantity != null)
+                    { 
+                        existingPopsicle.Quantity = popsicleUpdate.Quantity;
+                    }
                     
 
                     //return 200 OK with the updated popsicle
@@ -148,6 +147,34 @@ public class PopsicleController : ControllerBase
 
         //return bad request with validation errors
         return BadRequest(ModelState);
+    }
+    [HttpDelete("DeletePopsicle/{id}")]
+    public IActionResult DeletePopsicle(int id)
+    {
+        //check db if this popsicle exists
+        var popsicleModel = new PopsicleModel();
+        var existingPopsicle = popsicleModel.TestPopsicles.FirstOrDefault(p => p.Id == id);
+        //if it exists, delete it
+        if (existingPopsicle != null)
+        {
+            try
+            {
+                //remove the existing popsicle from the list
+                popsicleModel.TestPopsicles.Remove(existingPopsicle);           
+        //return 200 OK with a success message
+                return Ok(new { Message = "Popsicle deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                //log the exception
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "An error occurred while deleting the popsicle.", Error = ex.Message });
+            }
+        }
+        else
+        {
+            //if it does not exist, return 404 Not Found
+            return NotFound(new { Message = "Popsicle not found." });
+        }
     }
     [HttpGet("SearchPopsicles")]
     public IActionResult SearchPopsicles(string searchTerm)
@@ -175,7 +202,24 @@ public class PopsicleController : ControllerBase
         //return 200 OK with the search results
         return Ok(results);
     }
-   [HttpGet("GetAllPopsicles")]
+    [HttpGet("GetPopsicleById/{id}")]
+    public IActionResult GetPopsicleById(int id)
+    {
+        //check db if this popsicle exists
+        var popsicleModel = new PopsicleModel();
+        var existingPopsicle = popsicleModel.TestPopsicles.FirstOrDefault(p => p.Id == id);
+        //if it exists, return it
+        if (existingPopsicle != null)
+        {
+            return Ok(existingPopsicle);
+        }
+        else
+        {
+            //if it does not exist, return 404 Not Found
+            return NotFound(new { Message = "Popsicle not found." });
+        }
+    }
+    [HttpGet("GetAllPopsicles")]
     public IActionResult GetAllPopsicles()
     {
         //return the list of popsicles
