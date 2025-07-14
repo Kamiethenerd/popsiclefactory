@@ -1,9 +1,0 @@
-using System.Collections.Generic;
-
-namespace API
-{
-    public interface IPopsicleRepository
-    {
-        List<PopsicleModel.Popsicle> Popsicles { get; }
-    }
-}

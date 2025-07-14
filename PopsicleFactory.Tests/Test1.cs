@@ -22,4 +22,30 @@ public class PopsicleControllerTests
         // Assert
         Assert.IsInstanceOfType(result2, typeof(ConflictObjectResult));
     }
+    //test create popsicle method for invalid popsicle
+    [TestMethod]
+    public void CreatePopsicle_ReturnsBadRequest_WhenInvalid()
+    {
+        // Arrange
+        var repo = new InMemoryPopsicleRepository();
+        var controller = new PopsicleController(repo);
+        var popsicle = new PopsicleModel.Popsicle { Name = "", Flavor = "" }; // Invalid popsicle with empty name and flavor  
+        // Act
+        var result = controller.CreatePopsicle(popsicle);
+        // Assert
+        Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));      
+    }
+    //test create popsicle method for valid popsicle
+    [TestMethod]
+    public void CreatePopsicle_ReturnsCreated_WhenValid()
+    {
+        // Arrange
+        var repo = new InMemoryPopsicleRepository();
+        var controller = new PopsicleController(repo);
+        var popsicle = new PopsicleModel.Popsicle { Name = "Test", Flavor = "Grape" };      
+        // Act
+        var result = controller.CreatePopsicle(popsicle);
+        // Assert
+        Assert.IsInstanceOfType(result, typeof(OkObjectResult));    
+    }
 }
