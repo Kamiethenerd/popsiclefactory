@@ -95,6 +95,7 @@ public class PopsicleControllerTests
         }; // Valid popsicle
 
         // Act
+        repo.Popsicles.Add(new PopsicleModel.Popsicle { Id = 1, Name = "Old", Flavor = "OldFlavor" }); // Add an existing popsicle to replace
         var result = controller.ReplacePopsicle(1, popsicle);
         // Assert
         Assert.IsInstanceOfType(result, typeof(OkObjectResult));
@@ -119,6 +120,7 @@ public class PopsicleControllerTests
         var repo = new InMemoryPopsicleRepository();
         var controller = new PopsicleController(repo);
         // Act
+        repo.Popsicles.Add(new PopsicleModel.Popsicle { Id = 1, Name = "Test", Flavor = "Grape" }); // Add a popsicle to retrieve
         var result = controller.GetPopsicleById(1);
         // Assert
         Assert.IsInstanceOfType(result, typeof(OkObjectResult));
@@ -131,6 +133,11 @@ public class PopsicleControllerTests
         var repo = new InMemoryPopsicleRepository();
         var controller = new PopsicleController(repo);
         // Act
+        repo.Popsicles.AddRange(new List<PopsicleModel.Popsicle>
+        {
+            new PopsicleModel.Popsicle { Id = 1, Name = "Cherry Delight", Flavor = "Cherry" },
+            new PopsicleModel.Popsicle { Id = 2, Name = "Lemon Zest", Flavor = "Lemon" }
+        }); // Add some popsicles to retrieve
         var result = controller.GetAllPopsicles();
         // Assert
         Assert.IsInstanceOfType(result, typeof(OkObjectResult));
@@ -154,6 +161,7 @@ public class PopsicleControllerTests
         var repo = new InMemoryPopsicleRepository();
         var controller = new PopsicleController(repo);
         // Act
+        repo.Popsicles.Add(new PopsicleModel.Popsicle { Id = 1, Name = "Cherry Delight", Flavor = "Cherry" }); // Add a popsicle to search
         var result = controller.SearchPopsicles("Cherry");
         // Assert
         Assert.IsInstanceOfType(result, typeof(OkObjectResult));
