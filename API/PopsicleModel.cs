@@ -5,10 +5,9 @@ public class PopsicleModel
     public class Popsicle
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Flavor { get; set; } = string.Empty;
+        public string Name { get; set; }
+        public string Flavor { get; set; }
         public string Description { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public int? Quantity { get; set; }
     }
     public List<Popsicle> TestPopsicles = new List<Popsicle>
@@ -18,5 +17,6 @@ public class PopsicleModel
         new Popsicle { Id = 3, Name = "Mango Tango", Flavor = "Mango", Description = "A tropical mango-flavored popsicle.", Quantity = 8 },
         new Popsicle { Id = 4, Name = "Blueberry Bliss", Flavor = "Blueberry", Description = "A delightful blueberry-flavored popsicle.", Quantity = 12 }
     };
+
 };
 
