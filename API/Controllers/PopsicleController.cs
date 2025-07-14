@@ -130,7 +130,8 @@ public class PopsicleController : ControllerBase
                     { 
                         existingPopsicle.Quantity = popsicleUpdate.Quantity;
                     }
-                    
+                    //save the changes
+                    _repo.Popsicles[_repo.Popsicles.IndexOf(existingPopsicle)] = existingPopsicle;
 
                     //return 200 OK with the updated popsicle
                     return Ok(existingPopsicle);

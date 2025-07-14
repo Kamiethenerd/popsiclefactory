@@ -5,8 +5,8 @@ public class PopsicleModel
     public class Popsicle
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Flavor { get; set; } = string.Empty;
+        public string Name { get; set; }
+        public string Flavor { get; set; }
         public string Description { get; set; } = string.Empty;
         public int? Quantity { get; set; }
     }
